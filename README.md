@@ -1,10 +1,15 @@
-## rngminion
+##rngminion
 
 The rngminion.lua is a 4th gen emulator RNG script that hits your delay for you. This works even if you fast forward (allowing for some very quick and accurate).
 
-##todo
+##requirements
 
-Automatically advance frames with Chatots
+* desmume 0.9.9
+* runasdate (to force the date/time)
+
+##todo
+* Automatically advance frames with Chatots
+* Type out detailed usage instructions
 
 ##credits
 
