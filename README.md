@@ -8,7 +8,7 @@ What the bot does upon execution:
 2. Load your game save at the correct delay
 3. Bring up the menu at the earliest time
 4. Open the summary screen of the Pokemon in the 2nd slot of your party
-5. Attempts to perform frame advancement (assuming the 2nd and/or 3rd pokemon in your party is a Chatot with a custom chatter)
+5. Attempt to perform frame advancement (assuming the 2nd and/or 3rd pokemon in your party is a Chatot with a custom chatter)
 
 ##Requirements
 
@@ -34,15 +34,12 @@ You need to understand how 4th gen RNG works. All the bot does is perform input 
 
 ####Your setup *must* look like this:
 
-```
-+----------+----------+
-+   Any    |  Chatot  +
-+----------+----------+
-+  Chatot  | Any/None +
-+----------+----------+
-+ Any/None | Any/None +
-+----------+----------+
-```
+|  |  |
+|----------|----------|
+| Any | Chatot |
+| Chatot | Any/None |
+| Any/None | Any/None |
+
 This is very important because the bot will assume that you have a Chatot in the 2nd slot of your party, and that there's a Pokemon on the 3rd slot that it can switch to for frame advancement.
 
 ##Usage instructions
@@ -97,11 +94,17 @@ Set `hasjournal` to `true`
 ####My DeSmuME settings?
 
 Config -> Frame Skip -> Limit Framerate
+
 Config -> Frame Skip -> 0 (Never Skip)
+
 Config -> Emulation Settings -> Use external BIOS images: UNCHECKED
+
 Config -> Emulation Settings -> Use external firmware image: UNCHECKED
+
 Config -> Emulation Settings -> Enable Advanced Bus-Level Timing: CHECKED
+
 Config -> Emulation Settings -> Use dynamic recompiler: CHECKED
+
 Config -> Emulation Settings -> Use dynamic recompiler -> Block Size: 100
 
 ####You think the bot is bugged?
