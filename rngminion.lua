@@ -6,29 +6,29 @@ by u/Feder96 aka Real.96 of the Noob (New Order Of Breeding) forum
 and was taken from http://pokerng.forumcommunity.net/?t=56443955&p=396434984
 --]] 
 
-mdword=memory.readdwordunsigned
-mbyte=memory.readbyte
-rshift=bit.rshift
+mdword = memory.readdwordunsigned
+mbyte = memory.readbyte
+rshift = bit.rshift
 
 -- Your Configuration
-local targetdelay = 633 -- the delay we want to hit
-local hasjournal = true -- whether a journal will open or not (will be set to false on HGSS)
+targetdelay = 633 -- the delay we want to hit
+targetframe = 114 -- the frame we want to advance to
+hasjournal = true -- whether a journal will open or not (will be set to false on HGSS)
 
 -- Initialize on Script Startup
-local frame = 0
-local seed = 0
-local initial = 0
-local state = 0 -- to keep track of what we're doing now
-local presstime = 0 -- to keep track of how much longer A should be pressed
-local pressstart = 2 -- how many frames to keep A pressed
-local pressbutton = {} -- which buttons to press
+frame = 0
+seed = 0
+initial = 0
+presstime = 0 -- to keep track of how much longer A should be pressed
+pressstart = 2 -- how many frames to keep A pressed
+pressbutton = {} -- which buttons to press
 
 -- DPPt Delays
 introdelay = 377 -- dismiss intro
-startdelay = 445 -- dismiss start screen
+startdelay = 68 -- dismiss start screen
 journaldelay = 41 -- dismiss journal
 if hasjournal then
-	menudelay = 43 -- open menu with journal
+	menudelay = 44 -- open menu with journal
 else
 	menudelay = 50 -- open menu
 end
@@ -58,24 +58,78 @@ else
 	-- HGSS Delays
 	hasjournal = false -- no journal in HGSS
 	introdelay = 245 -- dismiss intro
-	startdelay = 313 -- dismiss start screen
+	startdelay = 68 -- dismiss start screen
 	menudelay = 50 -- open menu
 end
 
--- Poorly Written State Machine
-function fsm()
+-- Bot Script
+
+journalstep = {}
+if hasjournal then
+	journalstep.d = journaldelay
+	journalstep.b = {B=1}
+	journalstep.m = "Dismissed Journal"
+else
+	journalstep.d = 0
+	journalstep.b = {}
+end
+targetstep = {
+	d=targetdelay-(introdelay + startdelay),
+	b={A=1},
+	m="Delay Hit"
+}
+
+steps = {
+	{d=introdelay,	b={A=1},		m="Dismissed Intro"},
+	{d=startdelay,	b={A=1},		m="Dismissed Start Menu"},
+	targetstep, -- hit target delay
+	journalstep, -- dismiss journal
+	{d=menudelay,	b={X=1},		m="Menu Opened"},
+	{d=3,			b={down=1},		m="Highlighted Pokemon Button"},
+	{d=3,			b={A=1},		m="Opened Pokemon List"},
+	{d=65,			b={right=1},	m="Highlighted 2nd Pokemon"},
+	{d=3,			b={A=1},		m="Clicked 2nd Pokemon"},
+	{d=3,			b={A=1},		m="Opened 2nd Pokemon's Summary"},
+	{d=50,			b={},			m="Starting Advances"},
+	{a=true}, -- start advances,
+	{d=3,			b={B=1},		m="Frame Advances Done"}
+}
+stepidx = 1
+laststepdelay = 0
+onfirst = true
+
+function bot()
+	step = steps[stepidx]
 	delay = getdelay()
-	if state == 0 then
-		state_waitforintro(delay)
-	elseif state == 1 then
-		state_waitforstart(delay)
-	elseif state == 2 then
-		state_waitfordelay(delay)
-	elseif state == 3 then
-		state_waitforjournal(delay)
-	elseif state == 4 then
-		state_waitformenu(delay)
+	if step ~= nil then
+		if step.a == true then
+			-- here is where we do frame advancement via chatots
+			if frame < targetframe then
+				if delay >= laststepdelay + 5 then
+					if onfirst then
+						press({down=1})
+						onfirst = false
+					else
+						press({up=1})
+						onfirst = true
+					end
+					laststepdelay = delay
+				end
+			else
+				stepidx = stepidx + 1
+				laststepdelay = delay
+			end
+		elseif delay >= laststepdelay + step.d then
+			-- here is where we press the button at the end of a step's delay
+			press(step.b)
+			if step.m ~= nil then
+				print(step.m)
+			end
+			stepidx = stepidx + 1
+			laststepdelay = delay
+		end
 	end
+
 	if presstime > 0 then
 		-- we need to keep the button pressed for more than one frame
 		joypad.set(1, pressbutton)
@@ -83,57 +137,8 @@ function fsm()
 	end
 end
 
-function state_waitforintro(delay)
-	if delay < introdelay then
-		return
-	end
-	press({A=1})
-	state = 1
-end
-
-function state_waitforstart(delay)
-	if delay < startdelay then
-		return
-	end
-	press({A=1})
-	state = 2
-end
-
-function state_waitfordelay(delay)
-	if delay < targetdelay then
-		return
-	end
-	press({A=1})
-	if hasjournal then
-		state = 3
-	else
-		state = 4
-	end
-end
-
-function state_waitforjournal(delay)
-	if delay < targetdelay + journaldelay then
-		return
-	end
-	press({B=1})
-	state = 4
-end
-
-function state_waitformenu(delay)
-	maxdelay = targetdelay + menudelay
-	if hasjournal then
-		maxdelay = maxdelay + journaldelay
-	end
-	if delay < maxdelay then
-		return
-	end
-	press({X=1})
-	state = 5
-end
-
 -- Start Pressing Button
 function press(button)
-	print(button)
 	pressbutton = button
 	presstime = pressstart
 end
@@ -201,13 +206,12 @@ local function main()
 	end
 
 	-- Print variables in corner of bottom screen
-	gui.text(0,0,string.format("State: %d", state))
 	gui.text(0,150,string.format("Delay: %d", getdelay()))
 	gui.text(0,160,string.format("Next Seed: %08X", buildseed()))
 	gui.text(0,170,string.format("Initial Seed: %08X", initial))
 	gui.text(0,180,string.format("PIDRNG Frame: %d", frame))
 end
 
-emu.registerbefore(fsm)
+emu.registerbefore(bot)
 gui.register(main)
 emu.reset()
