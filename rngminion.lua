@@ -1,9 +1,10 @@
 --[[
 Latest version (and instructions) at https://github.com/hourglasseye/rngminion
 
-This script is a modification of the Lua_Script_4thGen_USA script
-by u/Feder96 aka Real.96 of the Noob (New Order Of Breeding) forum
-and was taken from http://pokerng.forumcommunity.net/?t=56443955&p=396434984
+This script (rnghelper.lua) was built on top of a Lua_Script_4thGen_USA.lua file
+taken from http://pokerng.forumcommunity.net/?t=56443955&p=396434984 whose code
+is composed of/based on the code of Kaphiotics which was then put together
+and revised by Feder96.
 --]] 
 
 mdword = memory.readdwordunsigned

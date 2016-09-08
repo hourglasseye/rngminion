@@ -93,19 +93,13 @@ Set `hasjournal` to `true`
 
 ####My DeSmuME settings?
 
-Config -> Frame Skip -> Limit Framerate
-
-Config -> Frame Skip -> 0 (Never Skip)
-
-Config -> Emulation Settings -> Use external BIOS images: UNCHECKED
-
-Config -> Emulation Settings -> Use external firmware image: UNCHECKED
-
-Config -> Emulation Settings -> Enable Advanced Bus-Level Timing: CHECKED
-
-Config -> Emulation Settings -> Use dynamic recompiler: CHECKED
-
-Config -> Emulation Settings -> Use dynamic recompiler -> Block Size: 100
+* Config -> Frame Skip -> Limit Framerate
+* Config -> Frame Skip -> 0 (Never Skip)
+* Config -> Emulation Settings -> Use external BIOS images: UNCHECKED
+* Config -> Emulation Settings -> Use external firmware image: UNCHECKED
+* Config -> Emulation Settings -> Enable Advanced Bus-Level Timing: CHECKED
+* Config -> Emulation Settings -> Use dynamic recompiler: CHECKED
+* Config -> Emulation Settings -> Use dynamic recompiler -> Block Size: 100
 
 ####You think the bot is bugged?
 
@@ -117,4 +111,4 @@ Otherwise, send me a detailed description of what happens. Also send specific re
 
 ##Credits
 
-This script is a modification of the Lua\_Script\_4thGen\_USA lua script by [Real.96](http://pokerng.forumcommunity.net/?act=Profile&MID=9270606) (known as [Feder96](https://www.reddit.com/user/Feder96) on reddit) of the [Noob (New Order Of Breeding)](http://pokerng.forumcommunity.net/) forum. The original scripts can be found [here](http://pokerng.forumcommunity.net/?t=56443955&p=396434984).
+This script (rnghelper.lua) was built on top of a Lua_Script_4thGen_USA.lua file (taken from [here](http://pokerng.forumcommunity.net/?t=56443955&p=396434984)) whose code is composed of/based on the code of [Kaphiotics](https://www.reddit.com/user/Kaphotics) (see [here](https://projectpokemon.org/forums/showthread.php?48322)), which was then put together and revised by [Feder96](https://www.reddit.com/user/Feder96).
