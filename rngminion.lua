@@ -206,6 +206,11 @@ local function main()
 		end
 	end
 
+	if presstime > 0 then
+		-- press button here as well
+		joypad.set(1, pressbutton)
+	end
+
 	-- Print variables in corner of bottom screen
 	gui.text(0,150,string.format("Delay: %d", getdelay()))
 	gui.text(0,160,string.format("Next Seed: %08X", buildseed()))
