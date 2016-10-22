@@ -1,6 +1,5 @@
 --[[
 Latest version (and instructions) at https://github.com/hourglasseye/rngminion
-
 This script (rnghelper.lua) was built on top of a Lua_Script_4thGen_USA.lua file
 taken from http://pokerng.forumcommunity.net/?t=56443955&p=396434984 whose code
 is composed of/based on the code of Kaphiotics which was then put together
@@ -148,17 +147,17 @@ function buildseed()
 	delay=mdword(0x021BF6A8+off2)+21
 	timehex=mdword(0x023FFDEC)
 	datehex=mdword(0x023FFDE8)
-	hour=string.format("%02X",(timehex%0x100)%0x40)	-- memory stores as decimal, but Lua reads as hex. Convert.
-	minute=string.format("%02X",(rshift(timehex%0x10000,8)))
+	hour=string.format("%02X",bit.band(bit.band(timehex,0xFF),0x3F))	-- memory stores as decimal, but Lua reads as hex. Convert.
+	minute=string.format("%02X",(rshift(bit.band(timehex,0xFFFF),8)))
 	second=string.format("%02X",(mbyte(0x02FFFDEE)))
 	year=string.format("%02X",(mbyte(0x02FFFDE8)))
 	month=string.format("%02X",(mbyte(0x02FFFDE9)))
 	day=string.format("%02X",(mbyte(0x02FFFDEA)))
-	ab=(month*day+minute+second)%256	-- Build Seed
+	ab=bit.band(month*day+minute+second,0xFF)	-- Build Seed
 	cd=hour
-	cgd=delay%65536 +1		-- can tweak for calibration
+	cgd=bit.band(delay,0xFFFF) +1		-- can tweak for calibration
 	abcd=ab*0x100+cd
-	efgh=(year+cgd)%0x10000
+	efgh=bit.band(year+cgd,0xFFFF)
 	nextseed=ab*0x1000000+cd*0x10000+efgh	-- Seed is built
 	return nextseed		
 end
@@ -186,8 +185,8 @@ local function main()
 	end
 
 	function next(s)
-		local a=0x41C6*(s%65536)+rshift(s,16)*0x4E6D
-		local b=0x4E6D*(s%65536)+(a%65536)*65536+0x6073
+		local a=0x41C6*bit.band(s,0xFFFF)+rshift(s,16)*0x4E6D
+		local b=0x4E6D*bit.band(s,0xFFFF)+bit.band(a,0xFFFF)*65536+0x6073
 		local c=b%4294967296
 		return c
 	end
