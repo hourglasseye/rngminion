@@ -26,7 +26,7 @@ pressbutton = {} -- which buttons to press
 -- DPPt Delays
 introdelay = 377 -- dismiss intro
 startdelay = 68 -- dismiss start screen
-journaldelay = 41 -- dismiss journal
+journaldelay = 42 -- dismiss journal
 if hasjournal then
 	menudelay = 44 -- open menu with journal
 else
